@@ -1,0 +1,169 @@
+#!/bin/bash
+
+function regex_check {
+  if [[ "$1" =~ $2 ]]; then {
+    echo "$1"
+  }
+  fi
+}
+
+function regex1 {
+  # username
+  regex_exp='^[a-zA-Z0-9_-]{3,16}$';
+  regex_check "$1" "$regex_exp"
+}
+
+function regex2 {
+  # strong password
+  regex_exp='[a-z0-9]([a-zA-Z0-9])*([!@#$^&*()_-])+[a-zA-Z0-9!@#$^&*()_-]*$';
+  regex_check "$1" "$regex_exp"
+}
+
+function regex3 {
+  # surname first name
+  regex_exp='[A-Z][a-z]+[[:space:]][A-Z][a-z]+';
+  regex_check "$1" "$regex_exp"
+}
+
+function regex4 {
+  # is email address
+  regex_exp='^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,5}$'
+  regex_check "$1" "$regex_exp"
+}
+
+function regex5 {
+  # simple slug
+  regex_exp='^[a-z0-9-]+$'
+  regex_check "$1" "$regex_exp"
+}
+
+function regex6 {
+  # is ukrainian phone number
+  regex_exp='^\+380[0-9]{9}$'
+  regex_check "$1" "$regex_exp"
+}
+
+function regex7 {
+  # date (with right values for days and months, as separators: - . /)
+  regex_exp='^([1-2][0-9]|3[0-1]|0?[1-9])([-\.\/ ])(1[0-2]|0?[1-9])([-\.\/ ])([0-9]{4})$'
+  regex_check "$1" "$regex_exp"
+}
+
+
+function regex8 {
+  # hex color values
+  regex_exp='^#?([a-f0-9]{6}|[a-f0-9]{3})$';
+  regex_check "$1" "$regex_exp"
+}
+
+function regex9 {
+  # money data
+  regex_exp='[0-9]*.[0-9][0-9]\$';
+  regex_check "$1" "$regex_exp"
+}
+
+function regex10 {
+  # IPv4
+  regex_exp='^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$'
+  regex_check "$1" "$regex_exp"
+}
+
+function regex11 {
+  # IPv6
+  regex_exp='^[A-Fa-f0-9:]+$'
+  regex_check "$1" "$regex_exp"
+}
+
+function regex12 {
+  # MAC-address
+  regex_exp='^([0-9a-fA-F]{2}\:){5}[0-9a-fA-F]{2}$'
+  regex_check "$1" "$regex_exp"
+}
+
+function regex13 {
+  # http/https urls
+  regex_exp='^(https?:\/\/)?([0-9a-z\.-]+)\.([a-z\.]{2,6})(\/[0-9a-z\.-]*)*\/?$'
+  regex_check "$1" "$regex_exp"
+}
+
+function regex14 {
+  # is digit line
+  regex_exp='^[0-9]+$'
+  regex_check "$1" "$regex_exp"
+}
+
+function regex15 {
+  # non-empty line
+  regex_exp='^.+$'
+  regex_check "$1" "$regex_exp"
+}
+
+function regex16 {
+  # line with words with doubled letters
+  regex_exp='/\(.\)\1/p';
+  echo "$1" | sed -n "$regex_exp"
+}
+
+function regex17 {
+  # separate 'or' (not within word body)
+  regex_exp='^(.*[^[:alpha:]])?or([^[:alpha:]]).*$'
+  regex_check "$1" "$regex_exp"
+}
+
+function regex18 {
+  # lines contains words with triple vowels (a, e, i, o, and u) in row
+  regex_exp='[aeiou]{3,}';
+  regex_check "$1" "$regex_exp"
+}
+
+function regex19 {
+  # line with words only of vowels
+  regex_exp='(^|^.*[[:space:]])[aeiou]{2,}($|[[:space:]].*$)';
+  regex_check "$1" "$regex_exp"
+}
+
+function regex20 {
+  # line with a abbreviation
+  regex_exp='[A-Z]{2,}';
+  regex_check "$1" "$regex_exp"
+}
+
+function regex_label_by_number {
+  case "$1" in
+  1) echo "Usernames:" ;;
+  2) echo "Passwords:" ;;
+  3) echo "Full names:" ;;
+  4) echo "Email addresses:" ;;
+  5) echo "Slugs" ;;
+  6) echo "Ukrainian phone numbers:" ;;
+  7) echo "Dates:" ;;
+  8) echo "Hex color values:" ;;
+  9) echo "Dollar data:" ;;
+  10) echo "IPv4 addresses:" ;;
+  11) echo "IPv6 addresses:" ;;
+  12) echo "MAC-addresses:" ;;
+  13) echo "http/https urls:" ;;
+  14) echo "Digit line:" ;;
+  15) echo "Non-empty line:" ;;
+  16) echo "Words with doubled letters:" ;;
+  17) echo "Separate 'or' (not within word body):" ;;
+  18) echo "Words with triple vowels" ;;
+  19) echo "Words only of vowels:" ;;
+  20) echo "Abbreviation:" ;;
+  *) echo "$1 is out of quantity regex functions" ;;
+  esac
+}
+
+function regex_by_number {
+  printf '\n\n---------------------------------\n'
+  regex_label_by_number "$1"
+  echo '---------------------------------'
+  exec 4<&0
+  exec 0<"$2"
+  while read line
+  do
+    regex"$1" "$line"
+  done
+  exec 0<&4
+  echo '##################################################################'
+}

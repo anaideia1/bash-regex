@@ -1,0 +1,37 @@
+#!/bin/bash
+. ./regex_functions
+
+function all_regexes {
+  for (( a = 1; a < 21; a++ )) {
+    regex_by_number "$a" "$1"
+  }
+}
+
+function regex_handler {
+  if [ -f "$2" ]; then {
+    if [ "$1" -eq 0 ];
+    then all_regexes "$2"
+    elif [ "$1" -gt 0 ] && [ "$1" -lt 21 ]; then regex_by_number "$1" "$2"
+    else echo "$1 is not an number of regex"
+    fi
+  } else echo "File doesn't exist"
+  fi
+}
+
+while [ -n "$1" ]
+do
+case "$1" in
+-a) regex_number=0
+  echo "Executing all regexes" ;;
+-b) regex_number="$2"
+  echo "Executing regex number $regex_number"
+  shift ;;
+-f) file_name="$2"
+  shift;;
+*) regex_number=-1
+  echo "$1 is not an option" ;;
+esac
+shift
+done
+
+regex_handler "$regex_number" "$file_name"
