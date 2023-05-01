@@ -9,13 +9,13 @@ function regex_check {
 
 function regex1 {
   # username
-  regex_exp='^[a-zA-Z0-9_-]{3,16}$';
+  regex_exp='^[a-zA-Z][a-zA-Z0-9_-]{2,15}$';
   regex_check "$1" "$regex_exp"
 }
 
 function regex2 {
   # strong password
-  regex_exp='[a-z0-9]([a-zA-Z0-9])*([!@#$^&*()_-])+[a-zA-Z0-9!@#$^&*()_-]*$';
+  regex_exp='^[a-z0-9]([a-zA-Z0-9])*([!@#$^&*()_-])+[a-zA-Z0-9!@#$^&*()_-]*$';
   regex_check "$1" "$regex_exp"
 }
 
